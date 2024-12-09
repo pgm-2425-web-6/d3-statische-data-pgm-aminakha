@@ -3,14 +3,14 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 export function barChart(selector, data, attributes = { width: 700, height: 400, margin: { top: 50, right: 30, bottom: 70, left: 60 } }) {
     const { width, height, margin } = attributes;
 
-    // Preprocess the data to count items by Genre
+    // Opvulling van data
     const genreCounts = {};
     data.forEach(d => {
         genreCounts[d.Genre] = (genreCounts[d.Genre] || 0) + 1;
     });
     const processedData = Object.entries(genreCounts).map(([genre, count]) => ({ genre, count }));
 
-    // Create SVG container
+    // de achtergrond maken achter de grafiek
     const svgBarChart = d3.select(selector)
         .append("svg")
         .attr("width", width)
@@ -20,7 +20,7 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .style("border-radius", "10px")
         .style("box-shadow", "0px 4px 10px rgba(0, 0, 0, 0.15)");
 
-    // Define scales
+    // de breedte en hoogte van de grafiek
     const xScale = d3.scaleBand()
         .domain(processedData.map(d => d.genre))
         .range([margin.left, width - margin.right])
@@ -30,7 +30,7 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .domain([0, d3.max(processedData, d => d.count)])
         .range([height - margin.bottom, margin.top]);
 
-    // Add axes with styled fonts
+    // de genres text aanmaken
     svgBarChart.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom(xScale))
@@ -38,7 +38,7 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end")
         .style("font-size", "14px")
-        .style("fill", "#333");
+        .style("fill", "black");
 
     svgBarChart.append("g")
         .attr("transform", `translate(${margin.left},0)`)
@@ -47,7 +47,7 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .style("font-size", "14px")
         .style("fill", "#333");
 
-    // Add bars with gradient fill and shadow
+    // the bars hun kleuren aanmaken
     const defs = svgBarChart.append("defs");
     defs.append("linearGradient")
         .attr("id", "bar-gradient")
@@ -81,19 +81,19 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .attr("y", d => yScale(d.count))
         .attr("height", d => height - margin.bottom - yScale(d.count));
 
-    // Tooltip with smooth styling
+    // Tooltip met de hover activiteit aanmaken
     const tooltip = d3.select("body")
         .append("div")
         .attr("class", "tooltip")
         .style("position", "absolute")
         .style("visibility", "hidden")
-        .style("background-color", "#ffffff")
-        .style("border", "1px solid #ccc")
+        .style("background-color", "white")
+        .style("border", "1px solid #ccc4c4")
         .style("border-radius", "8px")
         .style("padding", "10px")
         .style("box-shadow", "0px 2px 10px rgba(0, 0, 0, 0.1)")
         .style("font-size", "14px")
-        .style("color", "#333");
+        .style("color", "black");
 
     svgBarChart.selectAll(".bar")
         .on("mouseover", function (event, d) {
@@ -117,7 +117,7 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
                 .attr("fill", "url(#bar-gradient)");
         });
 
-    // Add chart title
+    // boven titel aanmaken voor de grafiek
     svgBarChart.append("text")
         .attr("x", width / 2)
         .attr("y", margin.top / 2)
@@ -127,17 +127,17 @@ export function barChart(selector, data, attributes = { width: 700, height: 400,
         .style("fill", "#2d3436")
         .text("TV Shows and Movies by Genre");
 
-    // Add Y-axis label
+    // de hoeveelheid aanmaken
     svgBarChart.append("text")
         .attr("x", -(height / 2))
         .attr("y", margin.left / 3)
         .attr("transform", "rotate(-90)")
         .style("font-size", "14px")
         .style("font-weight", "bold")
-        .style("fill", "#2d3436")
+        .style("fill", "black")
         .text("Count");
 
-    // Add X-axis label
+    // de genres aanmaken
     svgBarChart.append("text")
         .attr("x", width / 2)
         .attr("y", height - 10)
